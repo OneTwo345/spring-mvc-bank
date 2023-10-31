@@ -31,7 +31,7 @@
                     </div>
                     <div class="col-lg-6">
                         <label for="email" class="form-label">Email</label>
-                        <input type="email" class="form-control" id="email" th:field="*{email}">
+                        <input type="text" class="form-control" id="email" th:field="*{email}">
                     </div>
                 </div>
                 <div class="row mb-3">
@@ -52,8 +52,11 @@
                             Create
                         </button>
                     </div>
+
                 </div>
             </form>
+
+
         </div>
     </div>
 
@@ -68,12 +71,19 @@
     <th:block th:if="${success == false}">
         <footer class="container-fluid error" id="notification">
             <div class="container">
-                <div class="notification">
-                    <p class="error" th:text="${message}"></p>
+                <div class="col-lg-6">
+                    <th:block th:if="${error} == true">
+                        <div class="alert alert-danger">
+                            <ul class="list-styled">
+                                <li th:each="err : ${#fields.errors('customer.*')}" th:text="${err}"></li>
+                            </ul>
+                        </div>
+                    </th:block>
                 </div>
             </div>
         </footer>
     </th:block>
+
 
     <script src="/assets/js/custom-scrip.js"></script>
 
