@@ -1,5 +1,6 @@
 package com.example.baitap.service.customer;
 
+import com.example.baitap.exception.ResourceNotFoundException;
 import com.example.baitap.model.Customer;
 import com.example.baitap.model.Deposit;
 import com.example.baitap.model.Transfer;
@@ -33,7 +34,8 @@ public class CustomerService implements ICustomerService{
 
     @Override
     public Optional<Customer> findById(Long id) {
-        return customerRepository.findById(id);
+        return Optional.ofNullable(customerRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Sorry, no customer found with the Id :" + id)));
     }
 
     @Override

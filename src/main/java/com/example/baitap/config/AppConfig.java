@@ -1,5 +1,6 @@
 package com.example.baitap.config;
 
+//import com.example.baitap.exception.CustomExceptionHandler;
 import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.annotation.Configurable;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -141,4 +142,9 @@ public class AppConfig implements WebMvcConfigurer, ApplicationContextAware {
         bean.setValidationMessageSource(messageSource());
         return bean;
     }
+
+//    @Bean
+//    public CustomExceptionHandler customExceptionHandler(){
+//        return new CustomExceptionHandler();
+//    }
 }

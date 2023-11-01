@@ -39,6 +39,11 @@ public class Deposit implements Validator {
         Deposit deposit = (Deposit) o;
         BigDecimal transactionAmount = deposit.transactionAmount;
 
+
+        if (transactionAmount == null) {
+            errors.rejectValue("transactionAmount", "deposit.transactionAmount.null");
+            return;
+        }
         if (transactionAmount.compareTo(BigDecimal.TEN) < 0) {
             errors.rejectValue("transactionAmount", "deposit.transactionAmount.min",
                     "Transaction amount must be greater than or equal to 10.");
@@ -53,6 +58,8 @@ public class Deposit implements Validator {
             errors.rejectValue("transactionAmount", "deposit.transactionAmount.max",
                     "Transaction amount must be smaller than or equal to 1000.");
         }
+
+
 
 
     }

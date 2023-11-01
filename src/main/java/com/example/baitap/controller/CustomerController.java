@@ -64,13 +64,18 @@ public class CustomerController {
 
     @GetMapping("/deposit/{customerId}")
     public String showDepositPage(@PathVariable Long customerId, Model model) {
-        Optional<Customer> customerOptional = customerService.findById(customerId);
-        Customer customer = customerOptional.get();
-        Deposit deposit = new Deposit();
-        deposit.setCustomer(customer);
-        model.addAttribute("deposit", deposit);
+        try {
+            Optional<Customer> customerOptional = customerService.findById(customerId);
+            Customer customer = customerOptional.get();
+            Deposit deposit = new Deposit();
+            deposit.setCustomer(customer);
+            model.addAttribute("deposit", deposit);
 
-        return "banking/deposit";
+            return "banking/deposit";
+        }catch (Exception ex){
+            System.out.println(ex.getMessage() + customerId);
+            return "banking/404";
+        }
     }
 
     @GetMapping("/withdraw/{customerId}")
@@ -163,7 +168,7 @@ public class CustomerController {
 
     @PostMapping("/deposit/{customerId}")
     public String depositCustomer( @PathVariable Long customerId, @ModelAttribute Deposit deposit, Model model, RedirectAttributes redirectAttributes, BindingResult bindingResult) {
-
+    try {
         new Deposit().validate(deposit, bindingResult);
         Optional<Customer> customerOptional = customerService.findById(customerId);
 
@@ -181,6 +186,10 @@ public class CustomerController {
         redirectAttributes.addFlashAttribute("success", true);
         redirectAttributes.addFlashAttribute("message", "Deposit successfully");
         return "redirect:/customers";
+    }catch (Exception ex){
+        System.out.println(ex.getMessage());
+        return "banking/404";
+    }
 
     }
 
@@ -212,7 +221,8 @@ public class CustomerController {
     }
 
     @PostMapping("/transfer/{senderId}")
-    public String transferCustomer(@PathVariable Long senderId, @ModelAttribute Transfer transfer, Model model, RedirectAttributes redirectAttributes) {
+    public String transferCustomer(@Validated @PathVariable Long senderId, @ModelAttribute Transfer transfer,BindingResult bindingResult, Model model, RedirectAttributes redirectAttributes) {
+        new Transfer().validate(transfer,bindingResult);
         List<Customer> recipients = customerService.findAllWithoutId(senderId);
         Optional<Customer> customerOptional = customerService.findById(senderId);
         Customer customer = customerOptional.get();
@@ -221,11 +231,9 @@ public class CustomerController {
         transfer.setSender(customer);
         transfer.setRecipient(recipient);
 
-        if (transfer.getTransferAmount().compareTo(BigDecimal.ZERO) == 0) {
-            model.addAttribute("success", false);
-            model.addAttribute("message", "Transfer amount must be greater than 0");
+        if (bindingResult.hasErrors()) {
             model.addAttribute("transfer", transfer);
-            model.addAttribute("recipients", recipients);
+            model.addAttribute("error", true);
 
             return "banking/transfer";
         } else if (transfer.getTransferAmount().compareTo(customer.getBalance()) > 0) {

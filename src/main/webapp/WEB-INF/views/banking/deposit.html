@@ -41,7 +41,7 @@
                 </div>
                 <div class="col-lg-6">
                     <label for="transactionAmount" class="form-label">Transaction Amount ($)</label>
-                    <input type="number" class="form-control" id="transactionAmount" th:field="*{transactionAmount}" min="0" value="0.00">
+                    <input type="number" class="form-control" id="transactionAmount" th:field="*{transactionAmount}" min="0" value="BigDecimal.ZERO" >
                 </div>
             </div>
 
@@ -60,7 +60,7 @@
 <th:block th:if="${success == false}">
     <footer class="container-fluid error" id="notification">
         <div class="container">
-            <<th:block th:if="${error} == true">
+            <th:block th:if="${error} == true">
             <div class="alert alert-danger">
                 <ul class="list-styled">
                     <li th:each="err : ${#fields.errors('deposit.*')}" th:text="${err}"></li>
